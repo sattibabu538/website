@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Structures — Interactive Course</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#E7EAEF;--surface:#FFFFFF;--surface-2:#F2F4F8;
+    --ink:#14161F;--muted:#646B7A;--line:#D2D7E0;
+    --teal:#0F7A6E;--teal-soft:#D7EAE7;
+    --amber:#D9881F;--amber-soft:#F6E7CC;
+    --coral:#DC5746;--coral-soft:#F7DCD7;--node:#1C2030;
+    --display:"Space Grotesk",system-ui,sans-serif;
+    --body:"Inter",system-ui,sans-serif;
+    --mono:"JetBrains Mono",ui-monospace,monospace;
+    --radius:16px;--shadow:0 1px 2px rgba(20,22,31,.06),0 12px 36px rgba(20,22,31,.08);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;color:var(--ink);font-family:var(--body);line-height:1.55;
+    background:radial-gradient(circle at 1px 1px,#dadfe7 1px,transparent 0) 0 0/26px 26px,var(--bg);
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:var(--display);margin:0;line-height:1.12;letter-spacing:-.01em}
+  .mono{font-family:var(--mono)}
+  .wrap{max-width:880px;margin:0 auto;padding:0 22px}
+
+  /* ---------- sticky mini progress bar ---------- */
+  .topbar{position:sticky;top:0;z-index:40;background:rgba(231,234,239,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .topbar .wrap{display:flex;align-items:center;gap:16px;height:54px}
+  .topbar .brand{font-family:var(--mono);font-weight:700;font-size:13.5px;white-space:nowrap}
+  .topbar .brand .s{color:var(--teal)}
+  .miniwrap{flex:1;display:flex;align-items:center;gap:12px}
+  .minibar{flex:1;height:6px;background:var(--surface-2);border-radius:99px;overflow:hidden;border:1px solid var(--line)}
+  .minibar i{display:block;height:100%;width:0;background:var(--teal);transition:width .5s ease}
+  .minipct{font-family:var(--mono);font-size:12.5px;color:var(--muted);white-space:nowrap;min-width:96px;text-align:right}
+
+  /* ---------- hero ---------- */
+  .hero{padding:64px 0 52px;display:grid;grid-template-columns:1fr auto;gap:34px;align-items:center}
+  .eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--teal);margin-bottom:16px}
+  .hero h1{font-size:clamp(36px,7vw,60px);font-weight:700}
+  .hero p{color:var(--muted);max-width:48ch;margin-top:16px;font-size:17px}
+  .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+  .mchip{font-family:var(--mono);font-size:12.5px;padding:6px 12px;border-radius:99px;border:1px solid var(--line);background:var(--surface)}
+  .mchip b{color:var(--teal)}
+  .cta{margin-top:26px}
+  .btn{font-family:var(--mono);font-size:14px;font-weight:500;cursor:pointer;border-radius:11px;padding:13px 24px;border:1px solid var(--node);background:var(--node);color:#fff;transition:transform .08s,opacity .15s}
+  .btn:hover{opacity:.9}.btn:active{transform:translateY(1px)}
+  /* progress ring */
+  .ring{position:relative;width:138px;height:138px;flex-shrink:0}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .lbl{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+  .ring .lbl .big{font-family:var(--display);font-weight:700;font-size:30px;line-height:1}
+  .ring .lbl small{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.05em;display:block;margin-top:4px}
+
+  /* ---------- curriculum ---------- */
+  .curr-head{display:flex;align-items:baseline;gap:12px;margin:8px 0 26px}
+  .curr-head .n{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--teal)}
+  .curr-head h2{font-size:24px}
+
+  .path{position:relative;padding-left:58px;padding-bottom:40px}
+  .path::before{content:"";position:absolute;left:19px;top:14px;bottom:46px;width:2px;background:var(--line)}
+  .lesson{position:relative;margin-bottom:14px}
+  .node{position:absolute;left:-53px;top:17px;width:34px;height:34px;border-radius:50%;background:var(--surface);
+    border:2px solid var(--line);display:grid;place-items:center;font-family:var(--mono);font-size:13px;font-weight:700;color:var(--muted);
+    z-index:2;transition:background .25s,border-color .25s,color .25s}
+  .lesson.done .node{background:var(--teal);border-color:var(--teal);color:#fff}
+  .lesson.open .node{border-color:var(--node);color:var(--ink)}
+  .lesson.open.done .node{color:#fff}
+
+  .lcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+  .lhead{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:none;border:none;cursor:pointer;padding:18px 20px;font-family:var(--body)}
+  .lhead:hover{background:var(--surface-2)}
+  .lhead .tt{flex:1;min-width:0}
+  .lhead .tt h3{font-size:18px}
+  .lhead .tt span{color:var(--muted);font-size:14px;display:block;margin-top:2px}
+  .lhead .min{font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap}
+  .lhead .chev{font-family:var(--mono);color:var(--muted);transition:transform .25s;font-size:15px}
+  .lesson.open .lhead .chev{transform:rotate(90deg)}
+  .ldone-tag{font-family:var(--mono);font-size:11px;color:var(--teal);font-weight:700;display:none}
+  .lesson.done .ldone-tag{display:inline}
+
+  .lbody{display:none;padding:0 20px 22px;border-top:1px solid var(--line)}
+  .lesson.open .lbody{display:block;animation:fade .3s ease}
+  .lbody h4{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:20px 0 9px}
+  .obj{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:7px}
+  .obj li{position:relative;padding-left:22px;font-size:14.5px}
+  .obj li::before{content:"›";position:absolute;left:4px;color:var(--teal);font-family:var(--mono);font-weight:700}
+  .summary{font-size:15px;color:var(--ink)}
+  .keyidea{margin-top:16px;border-left:3px solid var(--amber);background:var(--amber-soft);border-radius:0 10px 10px 0;padding:12px 15px;font-size:14.5px}
+  .keyidea b{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--amber);display:block;margin-bottom:4px}
+
+  /* self check */
+  .check{margin-top:20px;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .check .cq{font-weight:600;font-size:14.5px}
+  .check .cq .tag{font-family:var(--mono);font-size:11px;color:var(--teal);display:block;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+  .copts{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+  .copt{display:flex;gap:10px;align-items:center;text-align:left;font-family:var(--body);font-size:14px;cursor:pointer;
+    background:var(--surface);border:1.5px solid var(--line);border-radius:9px;padding:11px 12px;transition:.12s}
+  .copt:hover:not(:disabled){border-color:var(--node)}
+  .copt:disabled{cursor:default}
+  .copt .k{flex-shrink:0;width:22px;height:22px;border-radius:6px;border:1.5px solid var(--line);display:grid;place-items:center;font-family:var(--mono);font-size:11px;font-weight:700;color:var(--muted)}
+  .copt.correct{border-color:var(--teal);background:var(--teal-soft)}.copt.correct .k{background:var(--teal);border-color:var(--teal);color:#fff}
+  .copt.wrong{border-color:var(--coral);background:var(--coral-soft)}.copt.wrong .k{background:var(--coral);border-color:var(--coral);color:#fff}
+  .cwhy{display:none;margin-top:11px;font-size:13.5px;color:var(--muted)}
+  .cwhy.show{display:block}.cwhy b{color:var(--teal)}
+
+  .lfoot{display:flex;align-items:center;gap:12px;margin-top:20px;flex-wrap:wrap}
+  .btn-done{font-family:var(--mono);font-size:13px;cursor:pointer;border-radius:10px;padding:11px 18px;border:1px solid var(--teal);background:var(--teal);color:#fff}
+  .btn-done:active{transform:translateY(1px)}
+  .lesson.done .btn-done{background:var(--surface);color:var(--teal)}
+  .btn-next{font-family:var(--mono);font-size:13px;cursor:pointer;border-radius:10px;padding:11px 18px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+  .btn-next:hover{background:var(--surface-2)}
+
+  /* completion */
+  .complete{display:none;margin:6px 0 60px;background:var(--node);color:#fff;border-radius:var(--radius);padding:32px 28px;text-align:center;box-shadow:var(--shadow)}
+  .complete.show{display:block;animation:fade .4s ease}
+  .complete h2{font-size:26px;color:#fff}
+  .complete p{color:#c6cdda;margin:10px auto 0;max-width:44ch}
+  .complete .restart{margin-top:20px;font-family:var(--mono);font-size:13px;cursor:pointer;border-radius:10px;padding:11px 20px;border:1px solid #fff;background:transparent;color:#fff}
+  .complete .restart:hover{background:rgba(255,255,255,.12)}
+
+  footer{padding:30px 0 60px;font-family:var(--mono);font-size:12.5px;color:var(--muted);text-align:center}
+  :focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @media (max-width:640px){
+    .hero{grid-template-columns:1fr;padding:46px 0 36px}
+    .ring{order:-1}
+    .path{padding-left:50px}.path::before{left:17px}.node{left:-47px;width:30px;height:30px}
+    .topbar .brand{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <span class="brand">structures<span class="s">/</span>course</span>
+    <div class="miniwrap">
+      <div class="minibar"><i id="miniFill"></i></div>
+      <span class="minipct" id="miniPct">0 of 7 lessons</span>
+    </div>
+  </div>
+</div>
+
+<header class="hero wrap">
+  <div>
+    <div class="eyebrow">Interactive course</div>
+    <h1>Data Structures,<br>hands-on</h1>
+    <p>Seven short lessons that take you from "what is a data structure" to stacks, queues, hash tables and trees — each with a self-check you answer as you go.</p>
+    <div class="meta">
+      <span class="mchip"><b>7</b> lessons</span>
+      <span class="mchip"><b>~90</b> min</span>
+      <span class="mchip">Level&nbsp;<b>Beginner</b></span>
+      <span class="mchip">No setup needed</span>
+    </div>
+    <div class="cta"><button class="btn" id="startBtn">Start course →</button></div>
+  </div>
+  <div class="ring" aria-hidden="true">
+    <svg width="138" height="138" viewBox="0 0 138 138">
+      <circle cx="69" cy="69" r="60" fill="none" stroke="var(--surface-2)" stroke-width="10"/>
+      <circle id="ringFill" cx="69" cy="69" r="60" fill="none" stroke="var(--teal)" stroke-width="10"
+              stroke-linecap="round" stroke-dasharray="377" stroke-dashoffset="377"/>
+    </svg>
+    <div class="lbl"><div><span class="big" id="ringPct">0%</span><small>COMPLETE</small></div></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="curr-head"><span class="n">Curriculum</span><h2>Your learning path</h2></div>
+  <div class="path" id="path"></div>
+
+  <div class="complete" id="complete">
+    <h2>Course complete 🎓</h2>
+    <p>You've worked through every structure — from Big-O to balanced trees. Revisit any lesson anytime, or reset to run it again.</p>
+    <button class="restart" id="restartBtn">Reset progress</button>
+  </div>
+</main>
+
+<footer>structures / course — an interactive introduction to data structures</footer>
+
+<script>
+const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const KEYS = ['A','B','C','D'];
+
+const LESSONS = [
+  {
+    title:'Foundations', tag:'What a data structure really is', min:12,
+    objectives:['Define a data structure in one sentence','Explain the time vs. space trade-off','Read Big-O: O(1), O(log n), O(n)'],
+    summary:'A data structure is an agreement about how values are laid out in memory and which operations become cheap as a result. The same six numbers can be arranged many ways — each arrangement makes some operations fast and others slow. Big-O describes how an operation\u2019s cost grows as the amount of data grows.',
+    key:'Choose a structure by the operation you run most often — not by what looks tidy on the page.',
+    check:{q:'Big-O notation mainly describes…',
+      opts:['How much memory one value uses','How an operation\u2019s cost grows as data grows','The exact milliseconds an operation takes','How readable the code is'],
+      answer:1, why:'Big-O captures the growth rate as n increases, ignoring constant factors and small inputs.'}
+  },
+  {
+    title:'Arrays', tag:'Contiguous memory, instant indexing', min:14,
+    objectives:['Describe contiguous storage','Access any element in O(1)','Explain why front-insertion is O(n)'],
+    summary:'Arrays store elements side by side in one continuous block, so any element is reached by arithmetic on its index — constant time, regardless of size. The trade-off: inserting or removing near the front forces every later element to shift over.',
+    key:'Random access is free; structural edits near the front are not.',
+    check:{q:'Why is reading array[500] O(1)?',
+      opts:['It scans from index 0 each time','Its address is computed directly from the index','Arrays are always kept sorted','It uses a hash function'],
+      answer:1, why:'Contiguous layout means address = base + index × element size — one calculation, any size.'}
+  },
+  {
+    title:'Linked lists', tag:'Nodes joined by pointers', min:14,
+    objectives:['Describe the node + pointer layout','Add to the head in O(1)','Explain why position access is O(n)'],
+    summary:'Each value lives in its own node that also points to the next one. Adding to the front just re-aims a single pointer (O(1)), but reaching the nth node means walking from the head one hop at a time (O(n)) because nodes are not contiguous.',
+    key:'Cheap edits at the ends, expensive lookup by position — the mirror image of an array.',
+    check:{q:'Reaching the 5th node in a linked list requires…',
+      opts:['Index arithmetic','Walking from the head, node by node','A binary search from the middle','Hashing the position'],
+      answer:1, why:'A node only knows its next neighbour, so you traverse from the head — O(n).'}
+  },
+  {
+    title:'Stacks', tag:'Last in, first out (LIFO)', min:10,
+    objectives:['Define LIFO ordering','Use push, pop and peek','Recognise call-stack and undo use cases'],
+    summary:'A stack exposes only its top. push adds a value, pop removes the most recent one, peek looks without removing — all O(1). This is exactly how a program tracks nested function calls, undo/redo history, and backtracking.',
+    key:'When the most recent item is the one you need next, reach for a stack.',
+    check:{q:'Which operations define a stack\u2019s interface?',
+      opts:['enqueue / dequeue','push / pop / peek','insert / delete / search','get / set'],
+      answer:1, why:'push, pop and peek all act on the top only — the LIFO interface.'}
+  },
+  {
+    title:'Queues', tag:'First in, first out (FIFO)', min:10,
+    objectives:['Define FIFO ordering','Use enqueue and dequeue','Recognise scheduling and BFS use cases'],
+    summary:'A queue adds at the rear and removes from the front, so items leave in the order they arrived — both ends are O(1). It models fair scheduling (CPU, printers), message buffers, and breadth-first search.',
+    key:'When order of arrival must be respected, use a queue.',
+    check:{q:'A queue removes items in what order?',
+      opts:['Most recent first','The order they arrived','Sorted order','Random order'],
+      answer:1, why:'FIFO — the first item enqueued is the first one dequeued.'}
+  },
+  {
+    title:'Hash tables', tag:'Compute the location, don\u2019t search', min:13,
+    objectives:['Explain hashing a key to a bucket','Achieve O(1) average lookup','Describe what a collision is'],
+    summary:'Instead of searching, a hash table computes where a value belongs: a hash function turns a key into a bucket index, making inserts and lookups near-instant on average. When two different keys map to the same bucket — a collision — the entries are chained together.',
+    key:'Hashing trades a little memory and one computation for O(1) average key lookup.',
+    check:{q:'A hash collision happens when…',
+      opts:['The table runs out of memory','Two different keys map to the same bucket','A key is too long to store','The hash value is negative'],
+      answer:1, why:'Many keys map onto few buckets, so different keys can share one; chaining resolves it.'}
+  },
+  {
+    title:'Trees', tag:'Hierarchies and ordered search', min:16,
+    objectives:['Describe the parent/child hierarchy','State the binary-search-tree rule','Explain O(log n) search when balanced'],
+    summary:'Trees link nodes hierarchically from a single root. A binary search tree keeps smaller values to the left and larger to the right, so each comparison discards half the remaining nodes — O(log n) search when balanced. Left unbalanced, it can degrade to a O(n) chain.',
+    key:'Balance is everything: a balanced tree searches in log n, a lopsided one in n.',
+    check:{q:'Searching a balanced BST is O(log n) because each step…',
+      opts:['Visits every node once','Discards about half the remaining nodes','Re-sorts the whole tree','Doubles the work left to do'],
+      answer:1, why:'The left/right rule lets a single comparison eliminate half the tree.'}
+  }
+];
+
+const done = new Set();
+let openIdx = -1;
+const path = document.getElementById('path');
+const C = 377;
+
+function buildLesson(L, i){
+  const lesson = document.createElement('section');
+  lesson.className = 'lesson';
+  lesson.dataset.i = i;
+  lesson.innerHTML = `
+    <div class="node">${i+1}</div>
+    <div class="lcard">
+      <button class="lhead" aria-expanded="false">
+        <div class="tt"><h3>${L.title} <span class="ldone-tag">✓ done</span></h3><span>${L.tag}</span></div>
+        <span class="min">${L.min} min</span>
+        <span class="chev">›</span>
+      </button>
+      <div class="lbody">
+        <h4>You'll learn</h4>
+        <ul class="obj">${L.objectives.map(o=>`<li>${o}</li>`).join('')}</ul>
+        <h4>Overview</h4>
+        <p class="summary">${L.summary}</p>
+        <div class="keyidea"><b>Key idea</b>${L.key}</div>
+        <div class="check">
+          <div class="cq"><span class="tag">Self-check</span>${L.check.q}</div>
+          <div class="copts">${L.check.opts.map((o,j)=>`<button class="copt" data-j="${j}"><span class="k">${KEYS[j]}</span><span>${o}</span></button>`).join('')}</div>
+          <div class="cwhy"></div>
+        </div>
+        <div class="lfoot">
+          <button class="btn-done">Mark complete</button>
+          ${i<LESSONS.length-1?'<button class="btn-next">Next lesson →</button>':''}
+        </div>
+      </div>
+    </div>`;
+
+  lesson.querySelector('.lhead').addEventListener('click', ()=>toggle(i));
+
+  lesson.querySelectorAll('.copt').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const opts = [...lesson.querySelectorAll('.copt')];
+      if(opts[0].disabled) return;
+      const j = +btn.dataset.j, ans = L.check.answer;
+      opts.forEach((b,k)=>{ b.disabled = true;
+        if(k===ans) b.classList.add('correct');
+        else if(k===j) b.classList.add('wrong');
+      });
+      const why = lesson.querySelector('.cwhy');
+      why.innerHTML = (j===ans?'<b>Correct.</b> ':'<b>Not quite.</b> ') + L.check.why;
+      why.classList.add('show');
+    });
+  });
+
+  lesson.querySelector('.btn-done').addEventListener('click', ()=>markDone(i));
+  const next = lesson.querySelector('.btn-next');
+  if(next) next.addEventListener('click', ()=>{ markDone(i, true); });
+
+  return lesson;
+}
+
+LESSONS.forEach((L,i)=>path.appendChild(buildLesson(L,i)));
+const lessonEls = [...path.children];
+
+function toggle(i){
+  const isOpen = lessonEls[i].classList.contains('open');
+  lessonEls.forEach((el,k)=>{
+    el.classList.toggle('open', k===i && !isOpen);
+    el.querySelector('.lhead').setAttribute('aria-expanded', String(k===i && !isOpen));
+  });
+  openIdx = isOpen ? -1 : i;
+  if(!isOpen) lessonEls[i].scrollIntoView({behavior: reduce?'auto':'smooth', block:'start'});
+}
+
+function open(i){
+  if(!lessonEls[i].classList.contains('open')) toggle(i);
+}
+
+function markDone(i, advance){
+  done.add(i);
+  lessonEls[i].classList.add('done');
+  lessonEls[i].querySelector('.btn-done').textContent = 'Completed ✓';
+  updateProgress();
+  if(done.size === LESSONS.length){
+    document.getElementById('complete').classList.add('show');
+    return;
+  }
+  if(advance){
+    // open the next not-yet-done lesson, else next sequential
+    let n = (i+1) % LESSONS.length;
+    for(let s=0;s<LESSONS.length;s++){ const c=(i+1+s)%LESSONS.length; if(!done.has(c)){n=c;break;} }
+    open(n);
+  }
+}
+
+function updateProgress(){
+  const pct = Math.round(done.size/LESSONS.length*100);
+  document.getElementById('ringFill').style.strokeDashoffset = C*(1-done.size/LESSONS.length);
+  document.getElementById('ringPct').textContent = pct+'%';
+  document.getElementById('miniFill').style.width = pct+'%';
+  document.getElementById('miniPct').textContent = `${done.size} of ${LESSONS.length} lessons`;
+}
+
+document.getElementById('startBtn').addEventListener('click', ()=>{
+  let n = 0; for(let i=0;i<LESSONS.length;i++){ if(!done.has(i)){n=i;break;} }
+  open(n);
+});
+
+document.getElementById('restartBtn').addEventListener('click', ()=>{
+  done.clear();
+  lessonEls.forEach(el=>{
+    el.classList.remove('done','open');
+    el.querySelector('.btn-done').textContent='Mark complete';
+    el.querySelector('.lhead').setAttribute('aria-expanded','false');
+    el.querySelectorAll('.copt').forEach(b=>{b.disabled=false;b.classList.remove('correct','wrong');});
+    el.querySelector('.cwhy').classList.remove('show');
+  });
+  document.getElementById('complete').classList.remove('show');
+  updateProgress();
+  window.scrollTo({top:0, behavior: reduce?'auto':'smooth'});
+});
+
+updateProgress();
+</script>
+</body>
+</html>
