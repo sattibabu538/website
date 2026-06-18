@@ -1,19 +1,237 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>My First Web Page</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D Satti Babu - Faculty Profile</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f0f4f8;
+            color: #333;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #1a3c6e, #2d6a9f);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .profile-photo {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+
+        .profile-photo-placeholder {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            border: 5px solid white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 4px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.5);
+            border-radius: 20px;
+            padding: 5px 16px;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        /* Main content */
+        main {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .info-card h2 {
+            font-size: 1.3rem;
+            color: #1a3c6e;
+            border-bottom: 3px solid #2d6a9f;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .info-item label {
+            font-size: 0.8rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .info-item p {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #222;
+        }
+
+        /* Courses */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .course-card {
+            border-radius: 10px;
+            padding: 24px;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: block;
+        }
+
+        .course-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .course-card.ds {
+            background: linear-gradient(135deg, #1a3c6e, #2d6a9f);
+        }
+
+        .course-card.cp {
+            background: linear-gradient(135deg, #c0392b, #e74c3c);
+        }
+
+        .course-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+        }
+
+        .course-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 6px;
+        }
+
+        .course-card p {
+            font-size: 0.85rem;
+            opacity: 0.85;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 600px) {
+            .info-grid, .courses-grid { grid-template-columns: 1fr; }
+            header h1 { font-size: 1.5rem; }
+        }
+    </style>
 </head>
 <body>
 
-    <h1>Welcome to HTML</h1>
-    <p>This is a sample HTML page.</p>
+    <header>
+        <!-- Replace photo.jpg with your actual photo file name if different -->
+        <img src="photo.jpg" alt="D Satti Babu" class="profile-photo"
+             onerror="this.style.display='none'; document.getElementById('avatar').style.display='inline-flex';">
+        <div class="profile-photo-placeholder" id="avatar" style="display:none;">👤</div>
 
-    <h2>About Me</h2>
-    <p>My name is D Sattibabu</p>
+        <h1>D Satti Babu</h1>
+        <p>M.Tech &nbsp;|&nbsp; Assistant Professor</p>
+        <div class="badge">Dept. of CSE (AI &amp; ML) &nbsp;•&nbsp; ANITS</div>
+    </header>
 
-    <a href="data-structures.html">Data Structures</a>
-    <a href="data-structures-quiz.html">Data Structures Quiz</a>
-    <a href="data-structures-course.html">Data Structures Course</a>
+    <main>
+
+        <!-- Profile Details -->
+        <div class="info-card">
+            <h2>Profile Information</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>Full Name</label>
+                    <p>D Satti Babu</p>
+                </div>
+                <div class="info-item">
+                    <label>Qualification</label>
+                    <p>M.Tech</p>
+                </div>
+                <div class="info-item">
+                    <label>Department</label>
+                    <p>Computer Science &amp; Engineering (AI &amp; ML)</p>
+                </div>
+                <div class="info-item">
+                    <label>College</label>
+                    <p>Anil Neerukonda Institute of Technology &amp; Sciences (ANITS)</p>
+                </div>
+                <div class="info-item">
+                    <label>Email</label>
+                    <p>sattibabu.csm@anits.edu.in</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Courses -->
+        <div class="info-card">
+            <h2>Courses Offered</h2>
+            <div class="courses-grid">
+                <a href="data-structures.html" class="course-card ds">
+                    <div class="course-icon">🌳</div>
+                    <h3>Data Structures</h3>
+                    <p>Arrays, Linked Lists, Trees, Graphs &amp; more</p>
+                </a>
+                <a href="CP_Week1_2_Attractive.pptx" class="course-card cp">
+                    <div class="course-icon">🏆</div>
+                    <h3>Competitive Programming</h3>
+                    <p>Problem solving, Algorithms &amp; Contest strategies</p>
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 D Satti Babu &nbsp;|&nbsp; ANITS, Visakhapatnam</p>
+    </footer>
 
 </body>
 </html>
